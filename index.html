@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Gini by oliviaguest</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Gini</h1>
+        <p>Calculate the Gini coefficient of a numpy array.</p>
+
+        <p class="view"><a href="https://github.com/oliviaguest/gini">View the Project on GitHub <small>oliviaguest/gini</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/oliviaguest/gini/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/oliviaguest/gini/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/oliviaguest/gini">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="gini" class="anchor" href="#gini" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>gini</h1>
+
+<p>A Gini coefficient calculator in Python.</p>
+
+<h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>This is a function that calculates the Gini coefficient of a numpy array. Gini coefficients are often used to quantify income inequality, read more <a href="http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm">here</a>.</p>
+
+<p>The function in <code>gini.py</code> is based on the third equation from <a href="http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm">here</a>, which defines the Gini coefficient as:</p>
+
+<p><img src="https://github.com/oliviaguest/gini/raw/master/gini.png" alt="G = \dfrac{ \sum_{i=1}^{n} (2i - n - 1) x_i}{n  \sum_{i=1}^{n} x_i}" title="Gini equation"></p>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>For a very unequal sample, 999 zeros and a single one:</p>
+
+<pre><code>&gt;&gt;&gt; from gini import *
+&gt;&gt;&gt; a = np.zeros((1000))
+&gt;&gt;&gt; a[0] = 1.0
+</code></pre>
+
+<p>The Gini coefficient is very close to 1.0:</p>
+
+<pre><code>&gt;&gt;&gt; gini(a)
+0.99890010998900103
+</code></pre>
+
+<p>For uniformly distributed random numbers, it will be low, around 0.33:</p>
+
+<pre><code>&gt;&gt;&gt; s = np.random.uniform(-1,0,1000)
+&gt;&gt;&gt; gini(s)
+0.3295183767105907
+</code></pre>
+
+<h2>
+<a id="input-assumptions" class="anchor" href="#input-assumptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Input Assumptions</h2>
+
+<p>The Gini calculation by definition requires non-zero positive (ascending-order) sorted values within a 1d vector. This is dealt with within <a href="https://github.com/oliviaguest/gini/blob/master/gini.py"><code>gini()</code></a>. So these four assumptions can be violated, as they are controlled for:</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">def</span> <span class="pl-en">gini</span>(<span class="pl-smi">array</span>):
+    <span class="pl-s"><span class="pl-pds">"""</span>Calculate the Gini coefficient of a numpy array.<span class="pl-pds">"""</span></span>
+    <span class="pl-c"># based on bottom eq: http://www.statsdirect.com/help/content/image/stat0206_wmf.gif</span>
+    <span class="pl-c"># from: http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm</span>
+    array <span class="pl-k">=</span> array.flatten() <span class="pl-c">#all values are treated equally, arrays must be 1d</span>
+    <span class="pl-k">if</span> np.amin(array) <span class="pl-k">&lt;</span> <span class="pl-c1">0</span>:
+        array <span class="pl-k">-=</span> np.amin(array) <span class="pl-c">#values cannot be negative</span>
+    array <span class="pl-k">+=</span> <span class="pl-c1">0.0000001</span> <span class="pl-c">#values cannot be 0</span>
+    array <span class="pl-k">=</span> np.sort(array) <span class="pl-c">#values must be sorted</span>
+    index <span class="pl-k">=</span> np.arange(<span class="pl-c1">1</span>,array.shape[<span class="pl-c1">0</span>]<span class="pl-k">+</span><span class="pl-c1">1</span>) <span class="pl-c">#index per array element</span>
+    n <span class="pl-k">=</span> array.shape[<span class="pl-c1">0</span>]<span class="pl-c">#number of array elements</span>
+    <span class="pl-k">return</span> ((np.sum((<span class="pl-c1">2</span> <span class="pl-k">*</span> index <span class="pl-k">-</span> n  <span class="pl-k">-</span> <span class="pl-c1">1</span>) <span class="pl-k">*</span> array)) <span class="pl-k">/</span> (n <span class="pl-k">*</span> np.sum(array))) <span class="pl-c">#Gini coefficient</span></pre></div>
+
+<h2>
+<a id="notes" class="anchor" href="#notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notes</h2>
+
+<p>It is faster than <a href="http://pysal.readthedocs.io/en/latest/_modules/pysal/inequality/gini.html">pysal.inequality.gini</a> and outputs are indistinguishable before approximately 6 decimal places. In other words, the two function are arithmetically identical. </p>
+
+<p>Other Gini coefficient functions found online do not produce equivalent results, hence why I wrote this.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/oliviaguest">oliviaguest</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
