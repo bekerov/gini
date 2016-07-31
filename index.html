@@ -86,9 +86,12 @@
 <h2>
 <a id="notes" class="anchor" href="#notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notes</h2>
 
-<p>It is faster than <a href="http://pysal.readthedocs.io/en/latest/_modules/pysal/inequality/gini.html">pysal.inequality.gini</a> and outputs are indistinguishable before approximately 6 decimal places. In other words, the two function are arithmetically identical. </p>
+<ul>
+<li><p>It is significantly faster than (the current implementation of) PySAL's Gini coefficient function (see  <a href="http://pysal.readthedocs.io/en/latest/_modules/pysal/inequality/gini.html">pysal.inequality.gini</a>) and outputs are indistinguishable before approximately 6 decimal places. In other words, the two function are arithmetically identical.</p></li>
+<li><p>It is slightly faster than the <a href="http://www.ellipsix.net/blog/2012/11/the-gini-coefficient-for-distribution-inequality.html">Gini coefficient function by David on Ellipsix</a>.</p></li>
+</ul>
 
-<p>Other Gini coefficient functions found online do not produce equivalent results, hence why I wrote this.</p>
+<p>Many other Gini coefficient functions found online do not produce equivalent results, hence why I wrote this.</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/oliviaguest">oliviaguest</a></p>
